@@ -33,8 +33,14 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
         {q->ProductRole, "product"},
         {q->DescriptionRole, "description"},
         {q->IconRole, "icon"},
-        {q->EmblemsRole, "emblems"}
+        {q->EmblemsRole, "emblems"},
+        {q->ConnectionStatusRole, "status"}
     };
+
+    qRegisterMetaType<PeluxDeviceManagerEnums::DeviceType>("DeviceType");
+    qRegisterMetaType<PeluxDeviceManagerEnums::ConnectionType>("ConnectionType");
+    qRegisterMetaType<PeluxDeviceManagerEnums::DriveType>("DriveType");
+    qRegisterMetaType<PeluxDeviceManagerEnums::ConnectionStatus>("ConnectionStatus");
 
     initialize();
 }
@@ -104,6 +110,7 @@ QVariant PeluxDeviceManager::data(const QModelIndex &index, int role) const
     case DescriptionRole: return item->description();
     case IconRole: return item->icon();
     case EmblemsRole: return item->emblems();
+    case ConnectionStatusRole: return item->status();
     }
 
     return QVariant();
@@ -118,4 +125,26 @@ PeluxDevice* PeluxDeviceManager::get(int i) const
     }
 
     return d->devices.at(i);
+}
+
+QVector<PeluxDevice *> PeluxDeviceManager::allDevices() const
+{
+    Q_D(const PeluxDeviceManager);
+
+    return d->devices;
+}
+
+QVector<PeluxDevice *> PeluxDeviceManager::allDevicesOfType(PeluxDeviceManagerEnums::DeviceType type) const
+{
+    Q_D(const PeluxDeviceManager);
+
+    QVector<PeluxDevice *> result;
+
+    for (PeluxDevice *device: qAsConst(d->devices)) {
+        if (device->deviceType() == type) {
+            result.append(device);
+        }
+    }
+
+    return result;
 }

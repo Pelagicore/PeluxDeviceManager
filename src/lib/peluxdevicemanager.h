@@ -24,6 +24,7 @@
 
 #include "peluxdevice.h"
 #include "peluxdevicemanager_global.h"
+#include "peluxdevicemanagerenums.h"
 
 class PeluxDeviceManagerPrivate;
 
@@ -43,6 +44,7 @@ public:
         DescriptionRole,
         IconRole,
         EmblemsRole,
+        ConnectionStatusRole,
     };
     Q_ENUM(Roles)
 
@@ -54,6 +56,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 
     Q_INVOKABLE PeluxDevice* get(int i) const;
+    Q_INVOKABLE QVector<PeluxDevice *> allDevices() const;
+    Q_INVOKABLE QVector<PeluxDevice *> allDevicesOfType(PeluxDeviceManagerEnums::DeviceType type) const;
 
 Q_SIGNALS:
     void countChanged();

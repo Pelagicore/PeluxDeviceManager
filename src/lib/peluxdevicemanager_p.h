@@ -32,9 +32,9 @@ public:
     Q_DECLARE_PUBLIC(PeluxDeviceManager)
     PeluxDeviceManager *q_ptr;
 
+    PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
     void initialize();
 
-    PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
     QHash<int, QByteArray> roles;
     QVector<PeluxDevice *> devices;
 };

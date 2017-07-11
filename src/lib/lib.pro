@@ -30,7 +30,8 @@ HEADERS += \
         peluxdevicemanager.h \
         peluxdevicemanager_global.h \ 
     peluxdevicemanager_p.h \
-    peluxdevice.h
+    peluxdevice.h \
+    peluxdevicemanagerenums.h
 
 unix {
     target.path = /usr/lib

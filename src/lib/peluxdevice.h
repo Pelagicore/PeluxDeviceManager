@@ -23,6 +23,7 @@
 #include <QObject>
 
 #include "peluxdevicemanager_global.h"
+#include "peluxdevicemanagerenums.h"
 
 class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDevice : public QObject
 {
@@ -30,12 +31,13 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDevice : public QObject
 
     Q_PROPERTY(QString id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString parentId READ parentId WRITE setParentId NOTIFY parentIdChanged)
-    Q_PROPERTY(int deviceType READ deviceType WRITE setDeviceType NOTIFY deviceTypeChanged) // TODO export proper DeviceType
+    Q_PROPERTY(PeluxDeviceManagerEnums::DeviceType deviceType READ deviceType WRITE setDeviceType NOTIFY deviceTypeChanged)
     Q_PROPERTY(QString vendor READ vendor WRITE setVendor NOTIFY vendorChanged)
     Q_PROPERTY(QString product READ product WRITE setProduct NOTIFY productChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY iconChanged)
     Q_PROPERTY(QStringList emblems READ emblems WRITE setEmblems NOTIFY emblemsChanged)
+    Q_PROPERTY(PeluxDeviceManagerEnums::ConnectionStatus status READ status WRITE setStatus NOTIFY statusChanged)
 
 public:
     explicit PeluxDevice(QObject *parent = nullptr);
@@ -47,8 +49,8 @@ public:
     virtual QString parentId() const = 0;
     virtual void setParentId(const QString &parentId) = 0;
 
-    virtual int deviceType() const = 0;
-    virtual void setDeviceType(int deviceType) = 0;
+    virtual PeluxDeviceManagerEnums::DeviceType deviceType() const = 0;
+    virtual void setDeviceType(PeluxDeviceManagerEnums::DeviceType deviceType) = 0;
 
     virtual QString vendor() const = 0;
     virtual void setVendor(const QString &vendor) = 0;
@@ -65,6 +67,9 @@ public:
     virtual QStringList emblems() const = 0;
     virtual void setEmblems(const QStringList &emblems) = 0;
 
+    virtual PeluxDeviceManagerEnums::ConnectionStatus status() const = 0;
+    virtual void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) = 0;
+
 Q_SIGNALS:
     void idChanged(const QString &id);
     void parentIdChanged(const QString &parentId);
@@ -74,4 +79,5 @@ Q_SIGNALS:
     void descriptionChanged(const QString &description);
     void iconChanged(const QString &icon);
     void emblemsChanged(const QStringList &emblems);
+    void statusChanged(PeluxDeviceManagerEnums::ConnectionStatus status);
 };
