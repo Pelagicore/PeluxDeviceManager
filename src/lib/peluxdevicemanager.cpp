@@ -35,6 +35,18 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
         {q->IconRole, "icon"},
         {q->EmblemsRole, "emblems"}
     };
+
+    initialize();
+}
+
+void PeluxDeviceManagerPrivate::initialize()
+{
+    Q_Q(PeluxDeviceManager);
+    q->beginResetModel();
+
+    // TODO query backends, fill data
+
+    q->endResetModel();
 }
 
 
@@ -60,11 +72,50 @@ int PeluxDeviceManager::count() const
 QHash<int, QByteArray> PeluxDeviceManager::roleNames() const
 {
     Q_D(const PeluxDeviceManager);
+
     return d->roles;
 }
 
 QVariant PeluxDeviceManager::data(const QModelIndex &index, int role) const
 {
-    // TODO
+    Q_D(const PeluxDeviceManager);
+
+    if (!index.isValid()) {
+        return QVariant();
+    }
+
+    const int row = index.row();
+
+    if (row < 0 || row >= count()) {
+        return QVariant();
+    }
+
+    const auto item = d->devices.at(row);
+    if (!item) {
+        return QVariant();
+    }
+
+    switch (role) {
+    case IdRole: return item->id();
+    case ParentIdRole: return item->parentId();
+    case DeviceTypeRole: return item->deviceType();
+    case ProductRole: return item->product();
+    case VendorRole: return item->vendor();
+    case DescriptionRole: return item->description();
+    case IconRole: return item->icon();
+    case EmblemsRole: return item->emblems();
+    }
+
     return QVariant();
+}
+
+PeluxDevice* PeluxDeviceManager::get(int i) const
+{
+    Q_D(const PeluxDeviceManager);
+
+    if (i < 0 || i >= d->devices.count()) {
+        return nullptr;
+    }
+
+    return d->devices.at(i);
 }

@@ -18,23 +18,9 @@
     License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <QHash>
-
 #include "peluxdevice.h"
 
-class PeluxDeviceManager;
-
-class PeluxDeviceManagerPrivate
+PeluxDevice::PeluxDevice(QObject *parent)
+    : QObject(parent)
 {
-public:
-    Q_DECLARE_PUBLIC(PeluxDeviceManager)
-    PeluxDeviceManager *q_ptr;
-
-    void initialize();
-
-    PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
-    QHash<int, QByteArray> roles;
-    QVector<PeluxDevice *> devices;
-};
+}

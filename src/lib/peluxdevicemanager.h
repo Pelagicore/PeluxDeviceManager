@@ -22,6 +22,7 @@
 
 #include <QAbstractListModel>
 
+#include "peluxdevice.h"
 #include "peluxdevicemanager_global.h"
 
 class PeluxDeviceManagerPrivate;
@@ -51,6 +52,8 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
     QVariant data(const QModelIndex &index, int role) const override;
+
+    Q_INVOKABLE PeluxDevice* get(int i) const;
 
 Q_SIGNALS:
     void countChanged();
