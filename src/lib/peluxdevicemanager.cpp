@@ -20,6 +20,7 @@
 
 #include "peluxdevicemanager.h"
 #include "peluxdevicemanager_p.h"
+#include "solid/solidbackend.h"
 
 PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
     : q_ptr(qptr)
@@ -45,12 +46,35 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
     initialize();
 }
 
+PeluxDeviceManagerPrivate::~PeluxDeviceManagerPrivate()
+{
+    qDeleteAll(devices);
+    devices.clear();
+}
+
 void PeluxDeviceManagerPrivate::initialize()
 {
     Q_Q(PeluxDeviceManager);
     q->beginResetModel();
 
-    // TODO query backends, fill data
+    SolidBackend * solidBackend = new SolidBackend(q);
+    devices.reserve(solidBackend->count());
+    devices.append(solidBackend->allDevices());
+    QObject::connect(solidBackend, &SolidBackend::deviceAdded, [this, q](PeluxDevice * dev) {
+        q->beginInsertRows(QModelIndex(), q->rowCount(), q->rowCount());
+        devices.append(dev);
+        Q_EMIT q->deviceAdded(dev);
+        q->endInsertRows();
+    });
+    QObject::connect(solidBackend, &SolidBackend::deviceRemoved, [this, q](PeluxDevice * dev) {
+        const int i = devices.indexOf(dev);
+        q->beginRemoveRows(QModelIndex(), i, i);
+        Q_EMIT q->deviceRemoved(dev);
+        devices.remove(i);
+        q->endRemoveRows();
+    });
+
+    // TODO query other backends, fill data
 
     q->endResetModel();
 }
@@ -70,15 +94,15 @@ PeluxDeviceManager::~PeluxDeviceManager()
     delete d_ptr;
 }
 
-int PeluxDeviceManager::count() const
+int PeluxDeviceManager::rowCount(const QModelIndex &) const
 {
-    return rowCount();
+    Q_D(const PeluxDeviceManager);
+    return d->devices.count();
 }
 
 QHash<int, QByteArray> PeluxDeviceManager::roleNames() const
 {
     Q_D(const PeluxDeviceManager);
-
     return d->roles;
 }
 
@@ -92,7 +116,7 @@ QVariant PeluxDeviceManager::data(const QModelIndex &index, int role) const
 
     const int row = index.row();
 
-    if (row < 0 || row >= count()) {
+    if (row < 0 || row >= rowCount()) {
         return QVariant();
     }
 
@@ -120,7 +144,7 @@ PeluxDevice* PeluxDeviceManager::get(int i) const
 {
     Q_D(const PeluxDeviceManager);
 
-    if (i < 0 || i >= d->devices.count()) {
+    if (i < 0 || i >= rowCount()) {
         return nullptr;
     }
 
@@ -139,6 +163,7 @@ QVector<PeluxDevice *> PeluxDeviceManager::allDevicesOfType(PeluxDeviceManagerEn
     Q_D(const PeluxDeviceManager);
 
     QVector<PeluxDevice *> result;
+    result.reserve(d->devices.count());
 
     for (PeluxDevice *device: qAsConst(d->devices)) {
         if (device->deviceType() == type) {

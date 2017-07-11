@@ -20,22 +20,32 @@
 
 #pragma once
 
-#include <QHash>
+#include <Solid/Device>
 
 #include "peluxdevice.h"
 
-class PeluxDeviceManager;
-
-class PeluxDeviceManagerPrivate
+class PeluxSolidDevice : public PeluxDevice
 {
+    Q_OBJECT
 public:
-    Q_DECLARE_PUBLIC(PeluxDeviceManager)
-    PeluxDeviceManager *q_ptr;
+    explicit PeluxSolidDevice(const Solid::Device &solidDevice, QObject * parent);
+    ~PeluxSolidDevice() = default;
 
-    PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
-    ~PeluxDeviceManagerPrivate();
-    void initialize();
+    QString id() const;
+    QString parentId() const;
+    PeluxDeviceManagerEnums::DeviceType deviceType() const;
+    QString vendor() const;
+    QString product() const;
+    QString description() const;
+    QString icon() const;
+    QStringList emblems() const;
+    PeluxDeviceManagerEnums::ConnectionStatus status() const;
+    void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status);
 
-    QHash<int, QByteArray> roles;
-    QVector<PeluxDevice *> devices;
+private:
+    void checkConnectionStatus();
+
+    Solid::Device m_device;
+    QString m_id;
+    PeluxDeviceManagerEnums::ConnectionStatus m_status{PeluxDeviceManagerEnums::UnknownConnectionStatus};
 };

@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += quick Solid
+CONFIG += c++11
 
 TARGET = PeluxDeviceManager
 TEMPLATE = lib
@@ -24,14 +25,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         peluxdevicemanager.cpp \
-    peluxdevice.cpp
+    peluxdevice.cpp \
+    solid/solidbackend.cpp \
+    solid/peluxsoliddevice.cpp
 
 HEADERS += \
         peluxdevicemanager.h \
         peluxdevicemanager_global.h \ 
     peluxdevicemanager_p.h \
     peluxdevice.h \
-    peluxdevicemanagerenums.h
+    peluxdevicemanagerenums.h \
+    solid/solidbackend.h \
+    solid/peluxsoliddevice.h
 
 unix {
     target.path = /usr/lib

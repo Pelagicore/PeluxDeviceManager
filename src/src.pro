@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = lib #imports tools
+SUBDIRS = lib \
+          #imports \
+          tools
 CONFIG += ordered

@@ -20,22 +20,28 @@
 
 #pragma once
 
-#include <QHash>
+#include <QVector>
 
-#include "peluxdevice.h"
+#include "peluxsoliddevice.h"
 
-class PeluxDeviceManager;
-
-class PeluxDeviceManagerPrivate
+class SolidBackend: public QObject
 {
+    Q_OBJECT
 public:
-    Q_DECLARE_PUBLIC(PeluxDeviceManager)
-    PeluxDeviceManager *q_ptr;
+    explicit SolidBackend(QObject * parent);
+    ~SolidBackend() = default;
+    QVector<PeluxDevice *> allDevices() const;
+    int count() const;
 
-    PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
-    ~PeluxDeviceManagerPrivate();
+Q_SIGNALS:
+    void deviceAdded(PeluxDevice *dev);
+    void deviceRemoved(PeluxDevice *dev);
+
+private Q_SLOTS:
+    void onDeviceAdded(const QString &udi);
+    void onDeviceRemoved(const QString &udi);
+
+private:
     void initialize();
-
-    QHash<int, QByteArray> roles;
-    QVector<PeluxDevice *> devices;
+    QVector<PeluxDevice *> m_devices;
 };

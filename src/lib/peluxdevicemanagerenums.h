@@ -28,12 +28,13 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDeviceManagerEnums {
     Q_GADGET
 public:
     enum DeviceType {
-        StorageDrive = 0,
+        UnknownDeviceType = 0,
+        StorageDrive,
         StorageDisc,
         OpticalDisc,
         Camera,
         PortableMediaPlayer,
-        Battery,
+        Last = 0xffff
     };
     Q_ENUM(DeviceType)
 

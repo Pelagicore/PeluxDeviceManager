@@ -32,7 +32,7 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDeviceManager: public QAbstractListMo
 {
     Q_OBJECT
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged)
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 
 public:
     enum Roles {
@@ -50,8 +50,8 @@ public:
 
     explicit PeluxDeviceManager(QObject *parent = nullptr);
     ~PeluxDeviceManager();
-    int count() const;
 
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QHash<int, QByteArray> roleNames() const override;
     QVariant data(const QModelIndex &index, int role) const override;
 
@@ -60,6 +60,8 @@ public:
     Q_INVOKABLE QVector<PeluxDevice *> allDevicesOfType(PeluxDeviceManagerEnums::DeviceType type) const;
 
 Q_SIGNALS:
+    void deviceAdded(PeluxDevice * device);
+    void deviceRemoved(PeluxDevice * device);
     void countChanged();
 
 private:
