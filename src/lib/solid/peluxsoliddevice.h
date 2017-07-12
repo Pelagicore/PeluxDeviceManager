@@ -41,6 +41,7 @@ public:
     QString icon() const override;
     QStringList emblems() const override;
     QString mountPoint() const override;
+    QString device() const override;
 
     void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) override;
 

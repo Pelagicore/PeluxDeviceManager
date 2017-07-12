@@ -24,6 +24,7 @@
 #include <Solid/OpticalDisc>
 #include <Solid/Camera>
 #include <Solid/PortableMediaPlayer>
+#include <Solid/Block>
 
 #include <QDebug>
 
@@ -109,6 +110,14 @@ QString PeluxSolidDevice::mountPoint() const
 {
     if (m_device.is<Solid::StorageAccess>()) {
         return m_device.as<Solid::StorageAccess>()->filePath();
+    }
+    return QString();
+}
+
+QString PeluxSolidDevice::device() const
+{
+    if (m_device.is<Solid::Block>()) {
+        return m_device.as<Solid::Block>()->device();
     }
     return QString();
 }

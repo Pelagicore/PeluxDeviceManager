@@ -9,6 +9,9 @@ void displayDevice(PeluxDevice * device)
     qWarning() << qUtf8Printable("\t" + device->description());
     qWarning() << "\tType: " << device->deviceType();
     qWarning() << "\tStatus:" << device->status();
+    if (!device->device().isEmpty()) {
+        qWarning() << "\tLow level device:" << device->device();
+    }
     if (device->status() == PeluxDeviceManagerEnums::Connected) {
         qWarning() << "\tMountpoint:" << device->mountPoint();
     }
