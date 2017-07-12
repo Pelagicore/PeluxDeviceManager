@@ -118,8 +118,10 @@ void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus statu
     if (status != m_status && m_device.is<Solid::StorageAccess>()) {
         if (status == PeluxDeviceManagerEnums::Connected) {
             m_device.as<Solid::StorageAccess>()->setup();
+            updateStatus(PeluxDeviceManagerEnums::Connecting);
         } else if (status == PeluxDeviceManagerEnums::Disconnected) {
             m_device.as<Solid::StorageAccess>()->teardown();
+            updateStatus(PeluxDeviceManagerEnums::Disconnecting);
         }
     }
 }
