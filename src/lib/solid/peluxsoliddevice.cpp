@@ -122,6 +122,22 @@ QString PeluxSolidDevice::device() const
     return QString();
 }
 
+bool PeluxSolidDevice::isRemovable() const
+{
+    if (m_device.is<Solid::StorageDrive>()) {
+        return m_device.as<Solid::StorageDrive>()->isRemovable();
+    } else if (m_device.is<Solid::OpticalDisc>()) {
+        return true;
+    } else if (m_device.is<Solid::StorageAccess>()) {
+        Solid::Device drive(m_device.parentUdi());
+        if (drive.is<Solid::StorageDrive>()) {
+            return drive.as<Solid::StorageDrive>()->isRemovable();
+        }
+    }
+
+    return false;
+}
+
 void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus status)
 {
     if (status != m_status && m_device.is<Solid::StorageAccess>()) {

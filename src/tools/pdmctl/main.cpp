@@ -15,6 +15,7 @@ void displayDevice(PeluxDevice * device)
     if (device->status() == PeluxDeviceManagerEnums::Connected) {
         qWarning() << "\tMountpoint:" << device->mountPoint();
     }
+    qWarning() << "\tRemovable:" << device->isRemovable();
 }
 
 int main(int argc, char *argv[])

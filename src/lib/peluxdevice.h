@@ -40,6 +40,7 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDevice : public QObject
     Q_PROPERTY(PeluxDeviceManagerEnums::ConnectionStatus status READ status WRITE setStatus NOTIFY statusChanged)
     Q_PROPERTY(QString mountPoint READ mountPoint NOTIFY statusChanged)
     Q_PROPERTY(QString device READ device)
+    Q_PROPERTY(bool removable READ isRemovable)
 
 public:
     explicit PeluxDevice(QObject *parent = nullptr);
@@ -55,6 +56,7 @@ public:
     virtual QStringList emblems() const = 0;
     virtual QString mountPoint() const = 0;
     virtual QString device() const = 0;
+    virtual bool isRemovable() const = 0;
 
     PeluxDeviceManagerEnums::ConnectionStatus status() const;
     virtual void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) = 0;
