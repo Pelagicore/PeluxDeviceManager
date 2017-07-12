@@ -7,8 +7,11 @@ void displayDevice(PeluxDevice * device)
 {
     qWarning() << qUtf8Printable(device->id() + ":");
     qWarning() << qUtf8Printable("\t" + device->description());
-    qWarning() << "\tProduct: " << qUtf8Printable(device->product());
+    qWarning() << "\tType: " << device->deviceType();
     qWarning() << "\tStatus:" << device->status();
+    if (device->status() == PeluxDeviceManagerEnums::Connected) {
+        qWarning() << "\tMountpoint:" << device->mountPoint();
+    }
 }
 
 int main(int argc, char *argv[])
@@ -21,6 +24,8 @@ int main(int argc, char *argv[])
     for (PeluxDevice * device: qAsConst(devices)) {
         displayDevice(device);
     }
+
+    qWarning() << "\nTotal number of devices:" << mgr->rowCount();
 
     QObject::connect(mgr.data(), &PeluxDeviceManager::deviceAdded, &displayDevice);
 

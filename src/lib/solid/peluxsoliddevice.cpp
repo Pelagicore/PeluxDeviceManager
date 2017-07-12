@@ -96,6 +96,14 @@ PeluxDeviceManagerEnums::ConnectionStatus PeluxSolidDevice::status() const
     return m_status;
 }
 
+QString PeluxSolidDevice::mountPoint() const
+{
+    if (m_device.is<Solid::StorageAccess>()) {
+        return m_device.as<Solid::StorageAccess>()->filePath();
+    }
+    return QString();
+}
+
 void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus status)
 {
     if (status != m_status) {
