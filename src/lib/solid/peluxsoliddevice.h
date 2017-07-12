@@ -21,6 +21,7 @@
 #pragma once
 
 #include <Solid/Device>
+#include <Solid/SolidNamespace>
 
 #include "peluxdevice.h"
 
@@ -31,22 +32,25 @@ public:
     explicit PeluxSolidDevice(const Solid::Device &solidDevice, QObject * parent);
     ~PeluxSolidDevice() = default;
 
-    QString id() const;
-    QString parentId() const;
-    PeluxDeviceManagerEnums::DeviceType deviceType() const;
-    QString vendor() const;
-    QString product() const;
-    QString description() const;
-    QString icon() const;
-    QStringList emblems() const;
-    PeluxDeviceManagerEnums::ConnectionStatus status() const;
+    QString id() const override;
+    QString parentId() const override;
+    PeluxDeviceManagerEnums::DeviceType deviceType() const override;
+    QString vendor() const override;
+    QString product() const override;
+    QString description() const override;
+    QString icon() const override;
+    QStringList emblems() const override;
     QString mountPoint() const override;
-    void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status);
+
+    void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) override;
+
+private Q_SLOTS:
+    void onStorageResult(Solid::ErrorType error, const QVariant &errorData);
 
 private:
     void checkConnectionStatus();
+    void updateStatus(PeluxDeviceManagerEnums::ConnectionStatus status);
 
     Solid::Device m_device;
-    QString m_id;
-    PeluxDeviceManagerEnums::ConnectionStatus m_status{PeluxDeviceManagerEnums::UnknownConnectionStatus};
+    QString m_id; // store the ID separately as the underlying Solid::Device might be gone anytime
 };

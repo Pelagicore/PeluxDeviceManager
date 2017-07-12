@@ -34,6 +34,19 @@ PeluxSolidDevice::PeluxSolidDevice(const Solid::Device &solidDevice, QObject *pa
     , m_device(solidDevice)
     , m_id(solidDevice.udi())
 {
+    if (m_device.is<Solid::StorageAccess>()) {
+        connect(m_device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged, [this](bool accessible, const QString &udi) {
+            if (udi == id()) {
+                if (accessible) {
+                    updateStatus(PeluxDeviceManagerEnums::Connected);
+                } else {
+                    updateStatus(PeluxDeviceManagerEnums::Disconnected);
+                }
+            }
+        });
+        connect(m_device.as<Solid::StorageAccess>(), &Solid::StorageAccess::setupDone, this, &PeluxSolidDevice::onStorageResult);
+        connect(m_device.as<Solid::StorageAccess>(), &Solid::StorageAccess::teardownDone, this, &PeluxSolidDevice::onStorageResult);
+    }
     checkConnectionStatus();
 }
 
@@ -54,7 +67,8 @@ PeluxDeviceManagerEnums::DeviceType PeluxSolidDevice::deviceType() const
     } else if (m_device.is<Solid::OpticalDisc>()) {
         return PeluxDeviceManagerEnums::OpticalDisc;
     } else if (m_device.is<Solid::StorageAccess>() && m_device.is<Solid::StorageVolume>()) {
-        if (!m_device.as<Solid::StorageAccess>()->isIgnored()) { // skip "ignored" partitions, like swap or system reserved
+        if (!m_device.as<Solid::StorageAccess>()->isIgnored()
+                && !m_device.as<Solid::StorageVolume>()->isIgnored()) { // skip "ignored" partitions, like swap or system reserved
             return PeluxDeviceManagerEnums::StorageDisc;
         }
     } else if (m_device.is<Solid::Camera>()) {
@@ -91,11 +105,6 @@ QStringList PeluxSolidDevice::emblems() const
     return m_device.emblems();
 }
 
-PeluxDeviceManagerEnums::ConnectionStatus PeluxSolidDevice::status() const
-{
-    return m_status;
-}
-
 QString PeluxSolidDevice::mountPoint() const
 {
     if (m_device.is<Solid::StorageAccess>()) {
@@ -106,22 +115,37 @@ QString PeluxSolidDevice::mountPoint() const
 
 void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus status)
 {
-    if (status != m_status) {
-        // TODO connect/disconnect
-        Q_EMIT statusChanged(m_status);
+    if (status != m_status && m_device.is<Solid::StorageAccess>()) {
+        if (status == PeluxDeviceManagerEnums::Connected) {
+            m_device.as<Solid::StorageAccess>()->setup();
+        } else if (status == PeluxDeviceManagerEnums::Disconnected) {
+            m_device.as<Solid::StorageAccess>()->teardown();
+        }
     }
+}
+
+void PeluxSolidDevice::onStorageResult(Solid::ErrorType error, const QVariant &errorData)
+{
+    qWarning() << Q_FUNC_INFO << "Mount/unmount operation ended with status:" << error << errorData.toString();
 }
 
 void PeluxSolidDevice::checkConnectionStatus()
 {
     if (m_device.is<Solid::StorageAccess>()) {
-        const auto access = m_device.as<Solid::StorageAccess>();
-        if (access->isAccessible()) {
-            m_status = PeluxDeviceManagerEnums::Connected;
+        if (m_device.as<Solid::StorageAccess>()->isAccessible()) {
+            updateStatus(PeluxDeviceManagerEnums::Connected);
         } else {
-            m_status = PeluxDeviceManagerEnums::Disconnected;
+            updateStatus(PeluxDeviceManagerEnums::Disconnected);
         }
     } else {
         qDebug() << "Device" << id() << "doesn't support connection status changes";
+    }
+}
+
+void PeluxSolidDevice::updateStatus(PeluxDeviceManagerEnums::ConnectionStatus status)
+{
+    if (status != m_status) {
+        m_status = status;
+        Q_EMIT statusChanged(m_status);
     }
 }

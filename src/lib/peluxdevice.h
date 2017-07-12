@@ -56,8 +56,11 @@ public:
     virtual QStringList emblems() const = 0;
     virtual QString mountPoint() const = 0;
 
-    virtual PeluxDeviceManagerEnums::ConnectionStatus status() const = 0;
+    PeluxDeviceManagerEnums::ConnectionStatus status() const;
     virtual void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) = 0;
+
+protected:
+    PeluxDeviceManagerEnums::ConnectionStatus m_status{PeluxDeviceManagerEnums::UnknownConnectionStatus};
 
 Q_SIGNALS:
     void statusChanged(PeluxDeviceManagerEnums::ConnectionStatus status);

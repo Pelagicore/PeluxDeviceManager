@@ -24,3 +24,8 @@ PeluxDevice::PeluxDevice(QObject *parent)
     : QObject(parent)
 {
 }
+
+PeluxDeviceManagerEnums::ConnectionStatus PeluxDevice::status() const
+{
+    return m_status;
+}
