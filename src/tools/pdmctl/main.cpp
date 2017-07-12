@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     qWarning() << "\nTotal number of devices:" << mgr->rowCount();
 
     QObject::connect(mgr.data(), &PeluxDeviceManager::deviceAdded, &displayDevice);
+    QObject::connect(mgr.data(), &PeluxDeviceManager::deviceRemoved, [](PeluxDevice * dev) {
+        qWarning() << "Device disconnected:" << dev->id();
+    });
 
     qWarning() << "\n-- Monitoring hotplug devices; Press Ctrl+C to quit --";
 
