@@ -35,7 +35,10 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
         {q->DescriptionRole, "description"},
         {q->IconRole, "icon"},
         {q->EmblemsRole, "emblems"},
-        {q->ConnectionStatusRole, "status"}
+        {q->ConnectionStatusRole, "status"},
+        {q->MountpointRole, "mountpoint"},
+        {q->DeviceRole, "device"},
+        {q->RemovableRole, "removable"}
     };
 
     qRegisterMetaType<PeluxDeviceManagerEnums::DeviceType>("DeviceType");
@@ -135,6 +138,9 @@ QVariant PeluxDeviceManager::data(const QModelIndex &index, int role) const
     case IconRole: return item->icon();
     case EmblemsRole: return item->emblems();
     case ConnectionStatusRole: return item->status();
+    case MountpointRole: return item->mountPoint();
+    case DeviceRole: return item->device();
+    case RemovableRole: return item->isRemovable();
     }
 
     return QVariant();

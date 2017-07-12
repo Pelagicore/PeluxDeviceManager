@@ -45,6 +45,9 @@ public:
         IconRole,
         EmblemsRole,
         ConnectionStatusRole,
+        MountpointRole,
+        DeviceRole,
+        RemovableRole,
     };
     Q_ENUM(Roles)
 
