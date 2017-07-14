@@ -4,7 +4,7 @@ QT -= gui
 CONFIG += c++11
 
 TARGET = pdmctl
-CONFIG += console
+CONFIG += console link_prl
 CONFIG -= app_bundle
 
 TEMPLATE = app

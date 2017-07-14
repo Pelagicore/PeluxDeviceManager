@@ -36,7 +36,8 @@ PeluxSolidDevice::PeluxSolidDevice(const Solid::Device &solidDevice, QObject *pa
     , m_id(solidDevice.udi())
 {
     if (m_device.is<Solid::StorageAccess>()) {
-        connect(m_device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged, [this](bool accessible, const QString &udi) {
+        connect(m_device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged,
+                [this](bool accessible, const QString &udi) {
             if (udi == id()) {
                 if (accessible) {
                     updateStatus(PeluxDeviceManagerEnums::Connected);
