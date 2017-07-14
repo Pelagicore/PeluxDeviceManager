@@ -9,6 +9,9 @@ void displayDevice(PeluxDevice * device)
     qWarning() << qUtf8Printable("\t" + device->description());
     qWarning() << "\tType: " << device->deviceType();
     qWarning() << "\tStatus:" << device->status();
+    if (device->driveType() != PeluxDeviceManagerEnums::UnknownDriveType) {
+        qWarning() << "\tDrive type:" << device->driveType();
+    }
     if (!device->device().isEmpty()) {
         qWarning() << "\tLow level device:" << device->device();
     }

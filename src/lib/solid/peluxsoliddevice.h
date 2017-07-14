@@ -43,6 +43,7 @@ public:
     QString mountPoint() const override;
     QString device() const override;
     bool isRemovable() const override;
+    PeluxDeviceManagerEnums::DriveType driveType() const override;
 
     void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) override;
 

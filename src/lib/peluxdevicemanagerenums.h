@@ -34,6 +34,7 @@ public:
         OpticalDisc,
         Camera,
         PortableMediaPlayer,
+        Bluetooth,
         Last = 0xffff
     };
     Q_ENUM(DeviceType)
@@ -55,13 +56,13 @@ public:
         Scsi,
         Sata,
         Platform,
-        Bluetooth,
         Wireless,
     };
     Q_ENUM(ConnectionType)
 
     enum DriveType {
-        HardDisk = 0,
+        UnknownDriveType = 0,
+        HardDisk,
         CdromDrive,
         Floppy,
         Tape,

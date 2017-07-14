@@ -138,6 +138,16 @@ bool PeluxSolidDevice::isRemovable() const
     return false;
 }
 
+PeluxDeviceManagerEnums::DriveType PeluxSolidDevice::driveType() const
+{
+    if (m_device.is<Solid::StorageDrive>()) {
+        // +1 -> we start at 0 (Unknown)
+        return static_cast<PeluxDeviceManagerEnums::DriveType>(m_device.as<Solid::StorageDrive>()->driveType() + 1);
+    }
+
+    return PeluxDeviceManagerEnums::UnknownDriveType;
+}
+
 void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus status)
 {
     if (status != m_status && m_device.is<Solid::StorageAccess>()) {
