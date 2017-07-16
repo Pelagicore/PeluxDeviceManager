@@ -73,10 +73,10 @@ PeluxDeviceManagerEnums::DeviceType PeluxSolidDevice::deviceType() const
                 && !m_device.as<Solid::StorageVolume>()->isIgnored()) { // skip "ignored" partitions, like swap or system reserved
             return PeluxDeviceManagerEnums::StorageDisc;
         }
-    } else if (m_device.is<Solid::Camera>()) {
-        return PeluxDeviceManagerEnums::Camera;
     } else if (m_device.is<Solid::PortableMediaPlayer>()) {
         return PeluxDeviceManagerEnums::PortableMediaPlayer;
+    } else if (m_device.is<Solid::Camera>()) {
+        return PeluxDeviceManagerEnums::Camera;
     }
 
     return PeluxDeviceManagerEnums::UnknownDeviceType;

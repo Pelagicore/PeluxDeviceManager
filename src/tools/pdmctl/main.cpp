@@ -21,25 +21,28 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QTranslator>
+#include <QLibraryInfo>
 
 #include "../../lib/peluxdevicemanager.h"
 
+
 void displayDevice(PeluxDevice * device)
 {
-    qWarning() << qUtf8Printable(device->id() + ":");
-    qWarning() << qUtf8Printable("\t" + device->description());
-    qWarning() << "\tType: " << device->deviceType();
-    qWarning() << "\tStatus:" << device->status();
+    qInfo().noquote() << device->id();
+    qInfo().nospace().noquote() << "\t" << qApp->translate("", "Description:") << " " << device->description();
+    qInfo().nospace().noquote() << "\t" << qApp->translate("", "Type:") << " " << device->deviceType();
+    qInfo().nospace().noquote() << "\t" << qApp->translate("", "Status:") << " " << device->status();
     if (device->driveType() != PeluxDeviceManagerEnums::UnknownDriveType) {
-        qWarning() << "\tDrive type:" << device->driveType();
+        qInfo().nospace().noquote() << "\t" << qApp->translate("", "Drive type:") << " " << device->driveType();
     }
     if (!device->device().isEmpty()) {
-        qWarning() << "\tLow level device:" << device->device();
+        qInfo().nospace().noquote() << "\t" << qApp->translate("", "Low level device:") << " " << device->device();
     }
     if (device->status() == PeluxDeviceManagerEnums::Connected) {
-        qWarning() << "\tMountpoint:" << device->mountPoint();
+        qInfo().nospace().noquote() << "\t" << qApp->translate("", "Mountpoint:") << " " << device->mountPoint();
     }
-    qWarning() << "\tRemovable:" << device->isRemovable();
+    qInfo().nospace().noquote() << "\t" << qApp->translate("", "Removable:") << " " << device->isRemovable();
 }
 
 void listDevices(const QScopedPointer<PeluxDeviceManager> & mgr) {
@@ -47,19 +50,27 @@ void listDevices(const QScopedPointer<PeluxDeviceManager> & mgr) {
     for (PeluxDevice * device: qAsConst(devices)) {
         displayDevice(device);
     }
-    qWarning() << "\nTotal number of devices:" << mgr->rowCount();
+    qInfo().nospace().noquote() << "\n" << qApp->translate("", "Total number of devices:") << " " << mgr->rowCount();
 }
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    a.setApplicationName(a.translate("", "Pelux Device Manager console tool"));
-    a.setApplicationVersion(QStringLiteral("1.0"));
+    a.setApplicationVersion(VERSION_NUMBER);
     a.setOrganizationName(QStringLiteral("Pelagicore"));
 
-    QCommandLineParser parser;
+    QTranslator qtTranslator;
+    qtTranslator.load(QLocale::system(), QStringLiteral("qt_"), QString(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&qtTranslator);
 
-    parser.addPositionalArgument(QStringLiteral("command"), a.translate("", "Command to perform (list | monitor)"),
+    QTranslator appTrans;
+    appTrans.load(a.applicationName());
+    a.installTranslator(&appTrans);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription(qApp->translate("", "Pelux Device Manager console tool"));
+
+    parser.addPositionalArgument(QStringLiteral("command"), qApp->translate("", "Command to perform (list | monitor)"),
                                  QStringLiteral("list | monitor"));
 
     parser.addHelpOption();
@@ -77,10 +88,10 @@ int main(int argc, char *argv[])
 
         QObject::connect(mgr.data(), &PeluxDeviceManager::deviceAdded, &displayDevice);
         QObject::connect(mgr.data(), &PeluxDeviceManager::deviceRemoved, [](PeluxDevice * dev) {
-            qWarning() << "Device disconnected:" << dev->id();
+            qInfo().nospace().noquote() << qApp->translate("", "Device disconnected:") << " " << dev->id();
         });
 
-        qWarning() << "\n-- Monitoring hotplug devices; Press Ctrl+C to quit --";
+        qInfo().nospace().noquote() << "\n-- " << qApp->translate("", "Monitoring hotplug devices; Press Ctrl+C to quit") << " --";
         return a.exec();
     }
 
