@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += quick Solid
+QT += quick Solid
 CONFIG += c++11 create_prl
 
 TARGET = PeluxDeviceManager
@@ -39,6 +39,8 @@ HEADERS += \
     solid/peluxsoliddevice.h
 
 unix {
-    target.path = /usr/lib
+    contains(QMAKE_HOST.arch, x86_64):{
+        target.path = /usr/lib64
+    } else: target.path = /usr/lib
     INSTALLS += target
 }

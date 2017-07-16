@@ -26,7 +26,6 @@
 
 #include "../../lib/peluxdevicemanager.h"
 
-
 void displayDevice(PeluxDevice * device)
 {
     qInfo().noquote() << device->id();
@@ -46,8 +45,7 @@ void displayDevice(PeluxDevice * device)
 }
 
 void listDevices(const QScopedPointer<PeluxDeviceManager> & mgr) {
-    QVector<PeluxDevice *> devices = mgr->allDevices();
-    for (PeluxDevice * device: qAsConst(devices)) {
+    for (PeluxDevice * device: mgr->allDevices()) {
         displayDevice(device);
     }
     qInfo().nospace().noquote() << "\n" << qApp->translate("", "Total number of devices:") << " " << mgr->rowCount();

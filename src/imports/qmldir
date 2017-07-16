@@ -1,0 +1,3 @@
+module PeluxDeviceManager
+plugin peluxdevicemanagerplugin
+classname PeluxDeviceManagerPlugin
