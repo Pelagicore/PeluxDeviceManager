@@ -38,7 +38,5 @@ HEADERS += \
     solid/solidbackend.h \
     solid/peluxsoliddevice.h
 
-unix {
-    target.path = $$[QT_INSTALL_LIBS]
-    INSTALLS += target
-}
+target.path = $$[QT_INSTALL_LIBS]
+INSTALLS += target
