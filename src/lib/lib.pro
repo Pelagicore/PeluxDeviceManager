@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT += quick Solid
-CONFIG += c++11 create_prl
+CONFIG += c++11 create_prl no_keywords
 
 TARGET = PeluxDeviceManager
 TEMPLATE = lib
