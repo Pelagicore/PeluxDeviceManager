@@ -39,8 +39,6 @@ HEADERS += \
     solid/peluxsoliddevice.h
 
 unix {
-    contains(QMAKE_HOST.arch, x86_64):{
-        target.path = /usr/lib64
-    } else: target.path = /usr/lib
+    target.path = $$[QT_INSTALL_LIBS]
     INSTALLS += target
 }
