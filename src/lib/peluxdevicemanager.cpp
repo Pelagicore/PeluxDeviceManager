@@ -66,6 +66,10 @@ void PeluxDeviceManagerPrivate::initialize()
     QObject::connect(solidBackend, &SolidBackend::deviceAdded, [this, q](PeluxDevice * dev) {
         q->beginInsertRows(QModelIndex(), q->rowCount(), q->rowCount());
         devices.append(dev);
+        QObject::connect(dev, &PeluxDevice::statusChanged, [q, dev, this]() {
+            const QModelIndex idx = q->index(devices.indexOf(dev));
+            Q_EMIT q->dataChanged(idx, idx);
+        });
         Q_EMIT q->deviceAdded(dev);
         q->endInsertRows();
     });
