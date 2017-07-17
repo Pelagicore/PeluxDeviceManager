@@ -29,19 +29,19 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDevice : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString id READ id)
-    Q_PROPERTY(QString parentId READ parentId)
-    Q_PROPERTY(PeluxDeviceManagerEnums::DeviceType deviceType READ deviceType)
-    Q_PROPERTY(QString vendor READ vendor)
-    Q_PROPERTY(QString product READ product)
-    Q_PROPERTY(QString description READ description)
-    Q_PROPERTY(QString icon READ icon)
+    Q_PROPERTY(QString id READ id CONSTANT)
+    Q_PROPERTY(QString parentId READ parentId CONSTANT)
+    Q_PROPERTY(PeluxDeviceManagerEnums::DeviceType deviceType READ deviceType CONSTANT)
+    Q_PROPERTY(QString vendor READ vendor CONSTANT)
+    Q_PROPERTY(QString product READ product CONSTANT)
+    Q_PROPERTY(QString description READ description CONSTANT)
+    Q_PROPERTY(QString icon READ icon CONSTANT)
     Q_PROPERTY(QStringList emblems READ emblems NOTIFY statusChanged)
     Q_PROPERTY(PeluxDeviceManagerEnums::ConnectionStatus status READ status WRITE setStatus NOTIFY statusChanged)
     Q_PROPERTY(QString mountPoint READ mountPoint NOTIFY statusChanged)
-    Q_PROPERTY(QString device READ device)
-    Q_PROPERTY(bool removable READ isRemovable)
-    Q_PROPERTY(PeluxDeviceManagerEnums::DriveType driveType READ driveType)
+    Q_PROPERTY(QString device READ device CONSTANT)
+    Q_PROPERTY(bool removable READ isRemovable CONSTANT)
+    Q_PROPERTY(PeluxDeviceManagerEnums::DriveType driveType READ driveType CONSTANT)
 
 public:
     explicit PeluxDevice(QObject *parent = nullptr);
