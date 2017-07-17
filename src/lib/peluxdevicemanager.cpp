@@ -36,7 +36,7 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
         {q->IconRole, "icon"},
         {q->EmblemsRole, "emblems"},
         {q->ConnectionStatusRole, "status"},
-        {q->MountpointRole, "mountpoint"},
+        {q->MountpointRole, "mountPoint"},
         {q->DeviceRole, "device"},
         {q->RemovableRole, "removable"}
     };
