@@ -61,9 +61,13 @@ public:
     virtual QString device() const = 0;
     virtual bool isRemovable() const = 0;
     virtual PeluxDeviceManagerEnums::DriveType driveType() const = 0;
+    virtual QString uuid() const;
 
     PeluxDeviceManagerEnums::ConnectionStatus status() const;
     virtual void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) = 0;
+
+    Q_INVOKABLE void connectDevice();
+    Q_INVOKABLE void disconnectDevice();
 
 protected:
     PeluxDeviceManagerEnums::ConnectionStatus m_status{PeluxDeviceManagerEnums::UnknownConnectionStatus};

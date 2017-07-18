@@ -46,7 +46,10 @@ public:
         UnknownConnectionStatus = 0,
         Disconnecting,
         Disconnected,
+        Unpaired,
         Connecting,
+        Paired,
+        PairedAuthorized,
         Connected,
     };
     Q_ENUM(ConnectionStatus)

@@ -23,17 +23,19 @@
 
 #pragma once
 
-#include <Solid/Device>
-#include <Solid/SolidNamespace>
+#include <QPointer>
+#include <QBluetoothServiceInfo>
+#include <QBluetoothSocket>
+#include <QBluetoothLocalDevice>
 
 #include "peluxdevice.h"
 
-class PeluxSolidDevice : public PeluxDevice
+class PeluxBluetoothDevice : public PeluxDevice
 {
     Q_OBJECT
 public:
-    explicit PeluxSolidDevice(const Solid::Device &solidDevice, QObject * parent);
-    ~PeluxSolidDevice() = default;
+    explicit PeluxBluetoothDevice(const QBluetoothServiceInfo &btInfo, QBluetoothLocalDevice *btLocalDev, QObject * parent);
+    ~PeluxBluetoothDevice() = default;
 
     QString id() const override;
     QString parentId() const override;
@@ -47,16 +49,18 @@ public:
     QString device() const override;
     bool isRemovable() const override;
     PeluxDeviceManagerEnums::DriveType driveType() const override;
+    QString uuid() const override;
 
     void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) override;
-
-private Q_SLOTS:
-    void onStorageResult(Solid::ErrorType error, const QVariant &errorData);
 
 private:
     void checkConnectionStatus();
     void updateStatus(PeluxDeviceManagerEnums::ConnectionStatus status);
-
-    Solid::Device m_device;
-    QString m_id; // store the ID separately as the underlying Solid::Device might be gone anytime
+    void connectToSocket();
+    void disconnectFromSocket();
+    QBluetoothLocalDevice::Pairing pairingStatus() const;
+    QBluetoothServiceInfo m_info;
+    QString m_id; // store the ID separately as the underlying BtDevice might be gone anytime
+    QScopedPointer<QBluetoothSocket> m_socket;
+    QPointer<QBluetoothLocalDevice> m_btLocalDevice;
 };

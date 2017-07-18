@@ -41,7 +41,9 @@ PeluxDeviceManagerPrivate::PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr)
         {q->ConnectionStatusRole, "status"},
         {q->MountpointRole, "mountPoint"},
         {q->DeviceRole, "device"},
-        {q->RemovableRole, "removable"}
+        {q->RemovableRole, "removable"},
+        {q->DriveTypeRole, "driveType"},
+        {q->UuidRole, "uuid"}
     };
 
     qRegisterMetaType<PeluxDeviceManagerEnums::DeviceType>("DeviceType");
@@ -64,15 +66,10 @@ void PeluxDeviceManagerPrivate::initialize()
     q->beginResetModel();
 
     SolidBackend * solidBackend = new SolidBackend(q);
-    devices.reserve(solidBackend->count());
-    devices.append(solidBackend->allDevices());
     QObject::connect(solidBackend, &SolidBackend::deviceAdded, [this, q](PeluxDevice * dev) {
         q->beginInsertRows(QModelIndex(), q->rowCount(), q->rowCount());
         devices.append(dev);
-        QObject::connect(dev, &PeluxDevice::statusChanged, [q, dev, this]() {
-            const QModelIndex idx = q->index(devices.indexOf(dev));
-            Q_EMIT q->dataChanged(idx, idx);
-        });
+        listenToDevice(dev);
         Q_EMIT q->deviceAdded(dev);
         q->endInsertRows();
     });
@@ -84,9 +81,43 @@ void PeluxDeviceManagerPrivate::initialize()
         q->endRemoveRows();
     });
 
-    // TODO query other backends, fill data
+    btBackend = new BluetoothBackend(q);
+    QObject::connect(btBackend, &BluetoothBackend::isDiscoveryActiveChanged, q, &PeluxDeviceManager::isBtDiscoveryActiveChanged);
+    QObject::connect(btBackend, &BluetoothBackend::deviceAdded, [this, q](PeluxDevice * dev) {
+        q->beginInsertRows(QModelIndex(), q->rowCount(), q->rowCount());
+        devices.append(dev);
+        listenToDevice(dev);
+        Q_EMIT q->deviceAdded(dev);
+        q->endInsertRows();
+    });
+    QObject::connect(btBackend, &BluetoothBackend::deviceRemoved, [this, q](PeluxDevice * dev) {
+        const int i = devices.indexOf(dev);
+        q->beginRemoveRows(QModelIndex(), i, i);
+        Q_EMIT q->deviceRemoved(dev);
+        devices.remove(i);
+        q->endRemoveRows();
+    });
+    QObject::connect(btBackend, &BluetoothBackend::pairingConfirmation, q, &PeluxDeviceManager::pairingConfirmation);
+
+    // populate with existing devices
+    devices.reserve(solidBackend->count() + btBackend->count());
+    devices.append(solidBackend->allDevices());
+    devices.append(btBackend->allDevices());
+
+    for(PeluxDevice *dev: devices) {
+        listenToDevice(dev);
+    }
 
     q->endResetModel();
+}
+
+void PeluxDeviceManagerPrivate::listenToDevice(PeluxDevice *dev)
+{
+    Q_Q(PeluxDeviceManager);
+    QObject::connect(dev, &PeluxDevice::statusChanged, [q, dev, this]() {
+        const QModelIndex idx = q->index(devices.indexOf(dev));
+        Q_EMIT q->dataChanged(idx, idx);
+    });
 }
 
 
@@ -148,6 +179,8 @@ QVariant PeluxDeviceManager::data(const QModelIndex &index, int role) const
     case MountpointRole: return item->mountPoint();
     case DeviceRole: return item->device();
     case RemovableRole: return item->isRemovable();
+    case DriveTypeRole: return item->driveType();
+    case UuidRole: return item->uuid();
     }
 
     return QVariant();
@@ -183,6 +216,31 @@ QVector<PeluxDevice *> PeluxDeviceManager::allDevicesOfType(PeluxDeviceManagerEn
             result.append(device);
         }
     }
+    result.squeeze();
 
     return result;
+}
+
+void PeluxDeviceManager::startBtDiscovery()
+{
+    Q_D(PeluxDeviceManager);
+    d->btBackend->startDiscovery();
+}
+
+void PeluxDeviceManager::stopBtDiscovery()
+{
+    Q_D(PeluxDeviceManager);
+    d->btBackend->stopDiscovery();
+}
+
+bool PeluxDeviceManager::isBtDiscoveryActive() const
+{
+    Q_D(const PeluxDeviceManager);
+    return d->btBackend->isDiscoveryActive();
+}
+
+void PeluxDeviceManager::confirmPairing(bool accept)
+{
+    Q_D(PeluxDeviceManager);
+    d->btBackend->confirmPairing(accept);
 }

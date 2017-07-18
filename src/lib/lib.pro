@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += quick Solid
+QT += quick Solid bluetooth
 CONFIG += c++11 create_prl no_keywords
 
 TARGET = PeluxDeviceManager
@@ -27,7 +27,10 @@ SOURCES += \
         peluxdevicemanager.cpp \
     peluxdevice.cpp \
     solid/solidbackend.cpp \
-    solid/peluxsoliddevice.cpp
+    solid/peluxsoliddevice.cpp \
+    bluetooth/bluetoothbackend.cpp \
+    bluetooth/peluxbtdevice.cpp \
+    bluetooth/rfkill.cpp
 
 HEADERS += \
         peluxdevicemanager.h \
@@ -36,7 +39,10 @@ HEADERS += \
     peluxdevice.h \
     peluxdevicemanagerenums.h \
     solid/solidbackend.h \
-    solid/peluxsoliddevice.h
+    solid/peluxsoliddevice.h \
+    bluetooth/bluetoothbackend.h \
+    bluetooth/peluxbtdevice.h \
+    bluetooth/rfkill.h
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
