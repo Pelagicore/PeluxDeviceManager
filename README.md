@@ -7,7 +7,10 @@ Current backends:
 - Solid
 
 ## Dependencies
-- Solid (http://solid.kde.org) + deps: libupnp, flex/bison, udev
+- Solid (https://api.kde.org/frameworks/solid/html/index.html)
+  - build deps: flex/bison, udev, extra-cmake-modules
+  - manual build: usually just a matter of `sudo apt build-dep solid` for Ubuntu or `sudo dnf builddep kf5-solid` for Fedora
+  - runtime deps: udisks2 (dbus), MediaPlayerInfo (optional)
 
 ## License
 Copyright (C) 2017 Pelagicore AB
