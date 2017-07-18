@@ -28,7 +28,22 @@ PeluxDevice::PeluxDevice(QObject *parent)
 {
 }
 
+QString PeluxDevice::uuid() const
+{
+    return QString();
+}
+
 PeluxDeviceManagerEnums::ConnectionStatus PeluxDevice::status() const
 {
     return m_status;
+}
+
+void PeluxDevice::connectDevice()
+{
+    setStatus(PeluxDeviceManagerEnums::Connected);
+}
+
+void PeluxDevice::disconnectDevice()
+{
+    setStatus(PeluxDeviceManagerEnums::Disconnected);
 }

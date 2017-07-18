@@ -156,18 +156,18 @@ void PeluxSolidDevice::setStatus(PeluxDeviceManagerEnums::ConnectionStatus statu
 {
     if (status != m_status && m_device.is<Solid::StorageAccess>()) {
         if (status == PeluxDeviceManagerEnums::Connected) {
-            m_device.as<Solid::StorageAccess>()->setup();
             updateStatus(PeluxDeviceManagerEnums::Connecting);
+            m_device.as<Solid::StorageAccess>()->setup();
         } else if (status == PeluxDeviceManagerEnums::Disconnected) {
-            m_device.as<Solid::StorageAccess>()->teardown();
             updateStatus(PeluxDeviceManagerEnums::Disconnecting);
+            m_device.as<Solid::StorageAccess>()->teardown();
         }
     }
 }
 
 void PeluxSolidDevice::onStorageResult(Solid::ErrorType error, const QVariant &errorData)
 {
-    qWarning() << Q_FUNC_INFO << "Mount/unmount operation ended with status:" << error << errorData.toString();
+    qDebug() << Q_FUNC_INFO << "Mount/unmount operation ended with status:" << error << errorData.toString();
 }
 
 void PeluxSolidDevice::checkConnectionStatus()

@@ -26,6 +26,7 @@
 #include <QHash>
 
 #include "peluxdevice.h"
+#include "bluetooth/bluetoothbackend.h"
 
 class PeluxDeviceManager;
 
@@ -38,7 +39,10 @@ public:
     PeluxDeviceManagerPrivate(PeluxDeviceManager *qptr);
     ~PeluxDeviceManagerPrivate();
     void initialize();
+    void listenToDevice(PeluxDevice *dev);
 
     QHash<int, QByteArray> roles;
     QVector<PeluxDevice *> devices;
+
+    BluetoothBackend *btBackend{nullptr};
 };

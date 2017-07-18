@@ -36,6 +36,7 @@ class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDeviceManager: public QAbstractListMo
     Q_OBJECT
 
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    Q_PROPERTY(bool btDiscoveryActive READ isBtDiscoveryActive NOTIFY isBtDiscoveryActiveChanged)
 
 public:
     enum Roles {
@@ -51,6 +52,8 @@ public:
         MountpointRole,
         DeviceRole,
         RemovableRole,
+        DriveTypeRole,
+        UuidRole,
     };
     Q_ENUM(Roles)
 
@@ -65,10 +68,24 @@ public:
     Q_INVOKABLE QVector<PeluxDevice *> allDevices() const;
     Q_INVOKABLE QVector<PeluxDevice *> allDevicesOfType(PeluxDeviceManagerEnums::DeviceType type) const;
 
+    Q_INVOKABLE void startBtDiscovery();
+    Q_INVOKABLE void stopBtDiscovery();
+    bool isBtDiscoveryActive() const;
+    /**
+      * To be called by the user to confirm the pairing request
+      */
+    Q_INVOKABLE void confirmPairing(bool accept);
+
 Q_SIGNALS:
     void deviceAdded(PeluxDevice * device);
     void deviceRemoved(PeluxDevice * device);
     void countChanged();
+    void isBtDiscoveryActiveChanged(bool active);
+
+    /**
+      * To be displayed to the user upon pairing a device
+      */
+    void pairingConfirmation(const QString &address, const QString &pin);
 
 private:
     Q_DISABLE_COPY(PeluxDeviceManager)
