@@ -27,9 +27,17 @@
 
 #include "peluxdevicemanager_global.h"
 
+/*!
+ * \brief Common enums
+ *
+ * The PeluxDeviceManagerEnums class serves as a shared "namespace" for common enums
+ */
 class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDeviceManagerEnums {
     Q_GADGET
 public:
+    /*!
+     * Enum representing the type of the device
+     */
     enum DeviceType {
         UnknownDeviceType = 0,
         StorageDrive,
@@ -42,6 +50,9 @@ public:
     };
     Q_ENUM(DeviceType)
 
+    /*!
+     * Enum representing the connection status of the device
+     */
     enum ConnectionStatus {
         UnknownConnectionStatus = 0,
         Disconnecting,
@@ -66,6 +77,9 @@ public:
     };
     Q_ENUM(ConnectionType)
 
+    /*!
+     * Enum representing the drive type of the device
+     */
     enum DriveType {
         UnknownDriveType = 0,
         HardDisk,

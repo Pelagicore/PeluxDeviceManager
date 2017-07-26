@@ -27,22 +27,69 @@
 #include "peluxdevicemanager_global.h"
 #include "peluxdevicemanagerenums.h"
 
+/*!
+ * \brief The PeluxDevice class
+ *
+ * An (almost) abstract class representing an entry in the PeluxDeviceManager model.
+ *
+ * \note Not to be instantiated directly, you can obtain instances from the model using
+ * PeluxDeviceManager::get()
+ */
 class PELUXDEVICEMANAGERSHARED_EXPORT PeluxDevice : public QObject
 {
     Q_OBJECT
 
+    /*!
+     * \copydoc PeluxDeviceManager::IdRole
+     */
     Q_PROPERTY(QString id READ id CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::ParentIdRole
+     */
     Q_PROPERTY(QString parentId READ parentId CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::DeviceTypeRole
+     */
     Q_PROPERTY(PeluxDeviceManagerEnums::DeviceType deviceType READ deviceType CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::VendorRole
+     */
     Q_PROPERTY(QString vendor READ vendor CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::ProductRole
+     */
     Q_PROPERTY(QString product READ product CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::DescriptionRole
+     */
     Q_PROPERTY(QString description READ description CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::IconRole
+     */
     Q_PROPERTY(QString icon READ icon CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::EmblemsRole
+     */
     Q_PROPERTY(QStringList emblems READ emblems NOTIFY statusChanged)
+    /*!
+     * \copydoc PeluxDeviceManager::ConnectionStatusRole
+     */
     Q_PROPERTY(PeluxDeviceManagerEnums::ConnectionStatus status READ status WRITE setStatus NOTIFY statusChanged)
+    /*!
+     * \copydoc PeluxDeviceManager::MountpointRole
+     */
     Q_PROPERTY(QString mountPoint READ mountPoint NOTIFY statusChanged)
+    /*!
+     * \copydoc PeluxDeviceManager::DeviceRole
+     */
     Q_PROPERTY(QString device READ device CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::RemovableRole
+     */
     Q_PROPERTY(bool removable READ isRemovable CONSTANT)
+    /*!
+     * \copydoc PeluxDeviceManager::DriveTypeRole
+     */
     Q_PROPERTY(PeluxDeviceManagerEnums::DriveType driveType READ driveType CONSTANT)
 
 public:
@@ -66,12 +113,21 @@ public:
     PeluxDeviceManagerEnums::ConnectionStatus status() const;
     virtual void setStatus(PeluxDeviceManagerEnums::ConnectionStatus status) = 0;
 
+    /*!
+     * Convenience method to change the status of the device to PeluxDeviceManagerEnums::Connected
+     */
     Q_INVOKABLE void connectDevice();
+    /*!
+     * Convenience method to change the status of the device to PeluxDeviceManagerEnums::Disconnected
+     */
     Q_INVOKABLE void disconnectDevice();
 
 protected:
     PeluxDeviceManagerEnums::ConnectionStatus m_status{PeluxDeviceManagerEnums::UnknownConnectionStatus};
 
 Q_SIGNALS:
+    /*!
+     * Emitted when the \p status of the device has changed
+     */
     void statusChanged(PeluxDeviceManagerEnums::ConnectionStatus status);
 };
